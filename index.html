@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MP2C — Plomberie · Chauffage · Climatisation à Marseille</title>
+  <meta name="description" content="MP2C : installation et entretien de climatisation, chauffage et plomberie à Marseille. Intervention 24h/24, artisan réactif noté 5/5. Devis gratuit." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #07090F;
+      --bg-2:      #0B0E18;
+      --panel:     rgba(255,255,255,0.05);
+      --panel-brd: rgba(255,255,255,0.10);
+      --text:      #F3F5FA;
+      --muted:     #99A1B3;
+      --cold:      #38BDF8;   /* climatisation */
+      --cold-2:    #22D3EE;
+      --hot:       #FB923C;   /* chauffage */
+      --hot-2:     #F59E0B;
+      --grad:      linear-gradient(120deg, var(--cold) 0%, #7DD3FC 30%, #FFFFFF 50%, #FED7AA 70%, var(--hot) 100%);
+      --grad-btn:  linear-gradient(120deg, var(--cold) 0%, var(--hot) 100%);
+      --radius:    20px;
+      --ring:      0 0 0 3px rgba(56,189,248,0.45);
+      --shadow:    0 20px 50px -20px rgba(0,0,0,0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .display { font-family: 'Space Grotesk', sans-serif; line-height: 1.1; letter-spacing: -0.02em; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(1180px, 92vw); margin: 0 auto; }
+    section { padding: clamp(64px, 9vw, 130px) 0; position: relative; }
+
+    /* ---------- Animated futuristic background ---------- */
+    .bg-fx { position: fixed; inset: 0; z-index: -2; overflow: hidden; background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(56,189,248,0.18), transparent 60%),
+      radial-gradient(1000px 600px at 0% 110%, rgba(251,146,60,0.16), transparent 60%),
+      var(--bg); }
+    .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; animation: float 16s ease-in-out infinite; }
+    .orb.cold { width: 460px; height: 460px; background: radial-gradient(circle, var(--cold), transparent 70%); top: -120px; right: -80px; }
+    .orb.hot  { width: 420px; height: 420px; background: radial-gradient(circle, var(--hot), transparent 70%); bottom: -140px; left: -100px; animation-delay: -8s; }
+    .grid-fx { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 60px 60px; mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 75%); }
+    @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-30px) scale(1.08); } }
+
+    /* ---------- Glass utility ---------- */
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--panel-brd);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border-radius: var(--radius);
+    }
+
+    /* ---------- Navbar ---------- */
+    header.nav { position: fixed; top: 16px; left: 0; right: 0; z-index: 50; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.15rem; }
+    .brand .logo { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: var(--grad-btn); color: #06121f; font-weight: 700; }
+    .nav-links { display: flex; gap: 26px; align-items: center; }
+    .nav-links a { color: var(--muted); font-size: 0.95rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { padding: 10px 18px; border-radius: 999px; background: var(--grad-btn); color: #06121f; font-weight: 700; font-size: .92rem; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+    .nav-cta:hover { box-shadow: 0 10px 30px -8px rgba(56,189,248,.6); }
+    .nav-toggle { display: none; background: none; border: 0; color: var(--text); cursor: pointer; }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-top: clamp(130px, 18vw, 200px); }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; font-size: .85rem; color: var(--muted); margin-bottom: 26px; }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 12px #22c55e; }
+    .hero h1 { font-size: clamp(2.5rem, 6.2vw, 4.6rem); font-weight: 700; max-width: 14ch; }
+    .hero h1 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p.lead { color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.3rem); max-width: 56ch; margin: 26px 0 36px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; border-radius: 999px; background: var(--grad-btn); color: #06121f; font-weight: 700; cursor: pointer; transition: transform .2s, box-shadow .2s; border: 0; font-size: 1rem; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -12px rgba(56,189,248,.65); }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 10px; padding: 15px 26px; border-radius: 999px; color: var(--text); font-weight: 600; cursor: pointer; }
+    .btn-ghost:hover { background: var(--panel); }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 54px; }
+    .stat { padding: 18px 22px; flex: 1; min-width: 150px; }
+    .stat .num { font-family: 'Space Grotesk'; font-size: 1.8rem; font-weight: 700; }
+    .stat .num .grad { background: var(--grad-btn); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .stat .lbl { color: var(--muted); font-size: .9rem; }
+    .stars { color: var(--hot-2); letter-spacing: 2px; }
+
+    /* ---------- Section heading ---------- */
+    .sec-head { max-width: 640px; margin-bottom: 56px; }
+    .sec-head .eyebrow { font-family: 'Space Grotesk'; text-transform: uppercase; letter-spacing: .22em; font-size: .8rem; color: var(--cold-2); margin-bottom: 14px; }
+    .sec-head h2 { font-size: clamp(2rem, 4.2vw, 3.1rem); font-weight: 700; }
+    .sec-head p { color: var(--muted); margin-top: 16px; font-size: 1.08rem; }
+
+    /* ---------- Services ---------- */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .card { padding: 32px; transition: transform .3s, border-color .3s, box-shadow .3s; cursor: default; position: relative; overflow: hidden; }
+    .card:hover { transform: translateY(-6px); border-color: rgba(56,189,248,.4); box-shadow: var(--shadow); }
+    .card .ico { width: 56px; height: 56px; border-radius: 15px; display: grid; place-items: center; margin-bottom: 22px; background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25); }
+    .card.warm .ico { background: rgba(251,146,60,.12); border-color: rgba(251,146,60,.28); }
+    .card .ico svg { width: 28px; height: 28px; }
+    .card h3 { font-size: 1.35rem; margin-bottom: 12px; }
+    .card p { color: var(--muted); font-size: .98rem; }
+    .card ul { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .card li { color: var(--muted); font-size: .92rem; display: flex; gap: 10px; align-items: flex-start; }
+    .card li svg { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 4px; color: var(--cold-2); }
+
+    /* ---------- Features / Why ---------- */
+    .why { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
+    .why-list { display: flex; flex-direction: column; gap: 18px; }
+    .why-item { display: flex; gap: 16px; padding: 20px; }
+    .why-item .ico { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; flex: 0 0 46px; background: var(--grad-btn); color: #06121f; }
+    .why-item .ico svg { width: 24px; height: 24px; }
+    .why-item h3 { font-size: 1.1rem; margin-bottom: 4px; }
+    .why-item p { color: var(--muted); font-size: .94rem; }
+    .why-visual { padding: 38px; text-align: center; }
+    .why-visual .big { font-family: 'Space Grotesk'; font-size: 4.5rem; font-weight: 700; line-height: 1; background: var(--grad-btn); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .why-visual .stars { font-size: 1.5rem; margin: 12px 0; }
+    .why-visual p { color: var(--muted); }
+
+    /* ---------- Reviews ---------- */
+    .reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .review { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+    .review .stars { font-size: 1.05rem; }
+    .review p { color: var(--text); font-size: .98rem; }
+    .review .who { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+    .review .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--grad-btn); color: #06121f; font-weight: 700; display: grid; place-items: center; font-family: 'Space Grotesk'; }
+    .review .who .n { font-weight: 600; font-size: .95rem; }
+    .review .who .s { color: var(--muted); font-size: .82rem; }
+
+    /* ---------- Contact ---------- */
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: start; }
+    .contact-info { display: flex; flex-direction: column; gap: 18px; }
+    .info-item { display: flex; gap: 14px; padding: 20px; align-items: center; }
+    .info-item .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; flex: 0 0 44px; background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25); }
+    .info-item .ico svg { width: 22px; height: 22px; color: var(--cold-2); }
+    .info-item .lbl { color: var(--muted); font-size: .82rem; }
+    .info-item .val { font-weight: 600; }
+    .info-item a.val:hover { color: var(--cold-2); }
+
+    form.contact { padding: 32px; display: flex; flex-direction: column; gap: 18px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: .9rem; font-weight: 500; }
+    .field input, .field textarea {
+      width: 100%; padding: 14px 16px; border-radius: 12px; font-family: inherit; font-size: 1rem;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--panel-brd); color: var(--text); transition: border-color .2s, box-shadow .2s;
+    }
+    .field input::placeholder, .field textarea::placeholder { color: #5c647a; }
+    .field input:focus, .field textarea:focus { outline: none; border-color: var(--cold); box-shadow: var(--ring); }
+    .field textarea { resize: vertical; min-height: 130px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    form.contact button { margin-top: 6px; }
+    .form-note { font-size: .82rem; color: var(--muted); }
+    #form-status { font-size: .95rem; padding: 12px 16px; border-radius: 12px; display: none; }
+    #form-status.ok { display: block; background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.4); color: #86efac; }
+    #form-status.err { display: block; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.4); color: #fca5a5; }
+
+    /* ---------- Footer ---------- */
+    footer { padding: 50px 0 40px; border-top: 1px solid var(--panel-brd); color: var(--muted); }
+    .foot-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; align-items: center; }
+    footer .brand { color: var(--text); }
+    footer small { font-size: .85rem; }
+
+    /* ---------- Chat widget ---------- */
+    #chat-launch { position: fixed; bottom: 24px; right: 24px; z-index: 60; width: 62px; height: 62px; border-radius: 50%; border: 0; cursor: pointer;
+      background: var(--grad-btn); color: #06121f; display: grid; place-items: center; box-shadow: 0 14px 40px -10px rgba(56,189,248,.7); transition: transform .2s; }
+    #chat-launch:hover { transform: scale(1.06); }
+    #chat-launch svg { width: 28px; height: 28px; }
+    #chat-panel { position: fixed; bottom: 100px; right: 24px; z-index: 60; width: min(380px, calc(100vw - 32px)); height: min(560px, calc(100vh - 140px));
+      display: none; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
+    #chat-panel.open { display: flex; animation: pop .25s ease; }
+    @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+    .chat-head { padding: 18px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--panel-brd); background: rgba(255,255,255,0.03); }
+    .chat-head .av { width: 40px; height: 40px; border-radius: 12px; background: var(--grad-btn); color: #06121f; display: grid; place-items: center; font-weight: 700; font-family: 'Space Grotesk'; }
+    .chat-head .t { font-weight: 600; font-size: .98rem; }
+    .chat-head .st { font-size: .78rem; color: #86efac; display: flex; align-items: center; gap: 6px; }
+    .chat-head .st .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .chat-head button { margin-left: auto; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 4px; }
+    .chat-head button:hover { color: var(--text); }
+    .chat-body { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+    .msg { max-width: 85%; padding: 11px 15px; border-radius: 16px; font-size: .94rem; line-height: 1.55; white-space: pre-wrap; word-wrap: break-word; }
+    .msg.bot { background: rgba(255,255,255,0.06); border: 1px solid var(--panel-brd); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.user { background: var(--grad-btn); color: #06121f; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+    .msg.typing { color: var(--muted); font-style: italic; }
+    .chat-foot { padding: 14px; border-top: 1px solid var(--panel-brd); display: flex; gap: 10px; background: rgba(255,255,255,0.03); }
+    .chat-foot input { flex: 1; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--panel-brd); color: var(--text); font-family: inherit; font-size: .95rem; }
+    .chat-foot input:focus { outline: none; border-color: var(--cold); box-shadow: var(--ring); }
+    .chat-foot button { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 12px; border: 0; background: var(--grad-btn); color: #06121f; cursor: pointer; display: grid; place-items: center; transition: transform .15s; }
+    .chat-foot button:hover { transform: scale(1.05); }
+    .chat-foot button:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ---------- Reveal animation ---------- */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .cards, .reviews { grid-template-columns: 1fr; }
+      .why, .contact-wrap { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      .nav-links.show { display: flex; position: absolute; top: 64px; left: 18px; right: 18px; flex-direction: column; padding: 18px; gap: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-fx" aria-hidden="true">
+    <div class="orb cold"></div>
+    <div class="orb hot"></div>
+  </div>
+  <div class="grid-fx" aria-hidden="true"></div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <div class="container">
+      <div class="nav-inner glass">
+        <a class="brand" href="#top" aria-label="MP2C accueil">
+          <span class="logo">M</span> MP2C
+        </a>
+        <nav class="nav-links" id="navLinks" aria-label="Navigation principale">
+          <a href="#services">Services</a>
+          <a href="#pourquoi">Pourquoi nous</a>
+          <a href="#avis">Avis</a>
+          <a href="#contact">Contact</a>
+          <a class="nav-cta" href="tel:0609205882">Appeler 24h/24</a>
+        </nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <a id="top"></a>
+  <section class="hero">
+    <div class="container">
+      <div class="badge glass reveal">
+        <span class="dot"></span> Marseille · Intervention 24h/24 · Noté 5,0 ★
+      </div>
+      <h1 class="reveal">Le confort thermique de votre maison, <span class="grad">maîtrisé du froid au chaud.</span></h1>
+      <p class="lead reveal">MP2C installe et entretient votre <strong>climatisation</strong>, votre <strong>chauffage</strong> et votre <strong>plomberie</strong> à Marseille. Un artisan réactif, soigné et disponible à toute heure.</p>
+      <div class="hero-actions reveal">
+        <a class="btn-primary" href="#contact">
+          Demander un devis gratuit
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn-ghost" href="tel:0609205882">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          06 09 20 58 82
+        </a>
+      </div>
+
+      <div class="hero-stats reveal">
+        <div class="stat glass"><div class="num"><span class="grad">5,0★</span></div><div class="lbl">Note moyenne (7 avis Google)</div></div>
+        <div class="stat glass"><div class="num"><span class="grad">24/7</span></div><div class="lbl">Disponible jour et nuit</div></div>
+        <div class="stat glass"><div class="num"><span class="grad">3</span></div><div class="lbl">Métiers : clim · chauffage · plomberie</div></div>
+        <div class="stat glass"><div class="num"><span class="grad">100%</span></div><div class="lbl">Clients qui recommandent</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Nos prestations</div>
+        <h2>Trois métiers, un seul artisan de confiance</h2>
+        <p>De l'installation de votre climatisation à la réparation d'une fuite, MP2C couvre tous vos besoins en confort et en eau.</p>
+      </div>
+      <div class="cards">
+        <article class="card glass reveal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--cold-2)" stroke-width="1.8"><path d="M12 2v20M12 6l3-3M12 6L9 3M12 18l3 3M12 18l-3 3M3 12h18M6 12l-3 3M6 12l-3-3M18 12l3 3M18 12l3-3"/></svg>
+          </div>
+          <h3>Climatisation</h3>
+          <p>Installation, mise en service et entretien de systèmes de climatisation réversible, monosplit et multisplit, pour un confort optimal toute l'année.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Pose de clim réversible</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Entretien & recharge de gaz</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Conseil & dimensionnement</li>
+          </ul>
+        </article>
+        <article class="card warm glass reveal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--hot)" stroke-width="1.8"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-4 4-8 4-8z"/><path d="M12 13a2 2 0 0 0-2 2c0 1.5 2 4 2 4s2-2.5 2-4a2 2 0 0 0-2-2z"/></svg>
+          </div>
+          <h3>Chauffage</h3>
+          <p>Installation et maintenance de pompes à chaleur, chaudières et radiateurs. Des solutions économes pour traverser l'hiver sereinement.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Pompe à chaleur (PAC)</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Entretien de chaudière</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Dépannage chauffage</li>
+          </ul>
+        </article>
+        <article class="card glass reveal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--cold-2)" stroke-width="1.8"><path d="M3 7h6v4a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3V5a2 2 0 0 1 2-2h2"/><path d="M3 7v6a4 4 0 0 0 4 4h2"/><circle cx="6" cy="7" r="3"/></svg>
+          </div>
+          <h3>Plomberie</h3>
+          <p>Recherche de fuite, dépannage, rénovation de salle de bain et installation sanitaire. Une intervention propre et durable.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Recherche & réparation de fuite</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Installation sanitaire</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Dépannage d'urgence</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY ============ -->
+  <section id="pourquoi">
+    <div class="container">
+      <div class="why">
+        <div class="reveal">
+          <div class="sec-head" style="margin-bottom:34px">
+            <div class="eyebrow">Pourquoi MP2C</div>
+            <h2>Un artisan que ses clients recommandent les yeux fermés</h2>
+          </div>
+          <div class="why-list">
+            <div class="why-item glass">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+              <div><h3>Disponible 24h/24</h3><p>Une urgence à 3h du matin ? Quentin répond et intervient, week-ends et jours fériés compris.</p></div>
+            </div>
+            <div class="why-item glass">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+              <div><h3>Réactivité reconnue</h3><p>« Réactif à mon appel et à l'intervention » : la rapidité est ce que nos clients citent en premier.</p></div>
+            </div>
+            <div class="why-item glass">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+              <div><h3>Travail soigné & honnête</h3><p>« C'est rare de trouver une société aussi honnête. » Un travail sérieux, du devis à la finition.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="why-visual glass reveal">
+          <div class="big">5,0</div>
+          <div class="stars">★★★★★</div>
+          <p><strong>7 avis Google</strong> — 100 % de satisfaction.<br/>Spécialiste reconnu de la climatisation à Marseille.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section id="avis">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Ils nous font confiance</div>
+        <h2>Avis clients vérifiés sur Google</h2>
+      </div>
+      <div class="reviews">
+        <article class="review glass reveal">
+          <div class="stars">★★★★★</div>
+          <p>« Quentin est une personne très consciencieuse qui sait exactement comment une clim doit fonctionner. Je recommande. »</p>
+          <div class="who"><div class="avatar">D</div><div><div class="n">David B.</div><div class="s">Local Guide · Google</div></div></div>
+        </article>
+        <article class="review glass reveal">
+          <div class="stars">★★★★★</div>
+          <p>« Quentin m'a installé deux climatisations avec un grand professionnalisme. Réactif, efficace et très sérieux. Je recommande vivement. »</p>
+          <div class="who"><div class="avatar">T</div><div><div class="n">Tony L.</div><div class="s">Avis Google</div></div></div>
+        </article>
+        <article class="review glass reveal">
+          <div class="stars">★★★★★</div>
+          <p>« Super, Quentin a su être réactif à mon appel et à l'intervention pour ma climatisation. Attentif au détail et professionnel. »</p>
+          <div class="who"><div class="avatar">C</div><div><div class="n">Client B.</div><div class="s">Avis Google</div></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Parlons de votre projet</div>
+        <h2>Demandez votre devis gratuit</h2>
+        <p>Décrivez votre besoin, nous vous recontactons rapidement. Pour une urgence, appelez directement le 06 09 20 58 82.</p>
+      </div>
+      <div class="contact-wrap">
+        <div class="contact-info reveal">
+          <a class="info-item glass" href="tel:0609205882">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div><div class="lbl">Téléphone (24h/24)</div><div class="val">06 09 20 58 82</div></div>
+          </a>
+          <div class="info-item glass">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="lbl">Adresse</div><div class="val">303 Rue Saint-Pierre, 13005 Marseille</div></div>
+          </div>
+          <div class="info-item glass">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+            <div><div class="lbl">Horaires</div><div class="val">Ouvert 24h/24, 7j/7</div></div>
+          </div>
+          <div class="info-item glass">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="lbl">Zone d'intervention</div><div class="val">Marseille et alentours (13)</div></div>
+          </div>
+        </div>
+
+        <!-- Formspree : remplace XXXXXXXX par ton identifiant -->
+        <form class="contact glass reveal" id="contactForm" action="https://formspree.io/f/XXXXXXXX" method="POST">
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Nom</label>
+              <input type="text" id="name" name="name" placeholder="Votre nom" required />
+            </div>
+            <div class="field">
+              <label for="phone">Téléphone</label>
+              <input type="tel" id="phone" name="phone" placeholder="06 12 34 56 78" required />
+            </div>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="vous@email.fr" required />
+          </div>
+          <div class="field">
+            <label for="message">Votre besoin</label>
+            <textarea id="message" name="message" placeholder="Décrivez votre projet : installation de climatisation, dépannage, entretien chauffage…" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" id="submitBtn">
+            Envoyer ma demande
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+          <div id="form-status" role="status" aria-live="polite"></div>
+          <p class="form-note">En envoyant ce formulaire, vous acceptez d'être recontacté par MP2C. Vos données ne sont jamais revendues.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="container">
+      <div class="foot-inner">
+        <div>
+          <div class="brand"><span class="logo">M</span> MP2C</div>
+          <small>Plomberie · Chauffage · Climatisation — Marseille</small>
+        </div>
+        <small>303 Rue Saint-Pierre, 13005 Marseille · 06 09 20 58 82 · Ouvert 24h/24</small>
+        <small>© <span id="year"></span> MP2C. Tous droits réservés.</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ CHAT WIDGET ============ -->
+  <button id="chat-launch" aria-label="Ouvrir le chat avec l'assistant MP2C">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </button>
+
+  <div id="chat-panel" class="glass" role="dialog" aria-label="Assistant MP2C">
+    <div class="chat-head">
+      <div class="av">M</div>
+      <div>
+        <div class="t">Assistant MP2C</div>
+        <div class="st"><span class="dot"></span> En ligne · réponse immédiate</div>
+      </div>
+      <button id="chat-close" aria-label="Fermer le chat">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div class="msg bot">Bonjour ! Je suis l'assistant de MP2C. Posez-moi vos questions sur la climatisation, le chauffage, la plomberie, nos délais ou notre zone d'intervention. 👋</div>
+    </div>
+    <form class="chat-foot" id="chat-form">
+      <input type="text" id="chat-input" placeholder="Posez votre question…" autocomplete="off" aria-label="Votre message" />
+      <button type="submit" id="chat-send" aria-label="Envoyer">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile menu
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('show');
+      navToggle.setAttribute('aria-expanded', open);
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('show')));
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // ---------- Formspree submit (AJAX, no page reload) ----------
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('form-status');
+    const submitBtn = document.getElementById('submitBtn');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.className = '';
+      submitBtn.disabled = true;
+      const original = submitBtn.innerHTML;
+      submitBtn.textContent = 'Envoi en cours…';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          status.className = 'ok';
+          status.textContent = 'Merci ! Votre demande a bien été envoyée. Nous vous recontactons très vite.';
+          form.reset();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          status.className = 'err';
+          status.textContent = (data.errors && data.errors.map(x => x.message).join(', ')) || "Une erreur est survenue. Appelez-nous au 06 09 20 58 82.";
+        }
+      } catch (err) {
+        status.className = 'err';
+        status.textContent = "Impossible d'envoyer le formulaire. Vérifiez votre connexion ou appelez le 06 09 20 58 82.";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = original;
+      }
+    });
+
+    // ---------- Chat widget ----------
+    const launch = document.getElementById('chat-launch');
+    const panel = document.getElementById('chat-panel');
+    const closeBtn = document.getElementById('chat-close');
+    const chatBody = document.getElementById('chat-body');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const history = []; // { role: 'user' | 'assistant', content }
+
+    function toggleChat(open) {
+      panel.classList.toggle('open', open);
+      if (open) setTimeout(() => chatInput.focus(), 50);
+    }
+    launch.addEventListener('click', () => toggleChat(!panel.classList.contains('open')));
+    closeBtn.addEventListener('click', () => toggleChat(false));
+
+    function addMsg(text, who) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + who;
+      div.textContent = text;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return div;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addMsg(text, 'user');
+      history.push({ role: 'user', content: text });
+      chatInput.value = '';
+      chatSend.disabled = true;
+
+      const typing = addMsg('L\'assistant écrit…', 'bot');
+      typing.classList.add('typing');
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: history.slice(0, -1) })
+        });
+        const data = await res.json();
+        typing.remove();
+        if (res.ok && data.reply) {
+          addMsg(data.reply, 'bot');
+          history.push({ role: 'assistant', content: data.reply });
+        } else {
+          addMsg(data.error || "Désolé, une erreur est survenue. Vous pouvez nous appeler au 06 09 20 58 82.", 'bot');
+        }
+      } catch (err) {
+        typing.remove();
+        addMsg("Impossible de joindre l'assistant pour le moment. Appelez-nous au 06 09 20 58 82.", 'bot');
+      } finally {
+        chatSend.disabled = false;
+        chatInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>
